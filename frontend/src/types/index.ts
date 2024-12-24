@@ -1,6 +1,11 @@
+export enum OrderSide {
+  Buy = "buy",
+  Sell = "sell",
+}
+
 export type Order = {
   id: string;
-  side: "buy" | "sell";
+  side: OrderSide;
   price: number;
   amount: number;
 };

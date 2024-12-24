@@ -1,10 +1,49 @@
-import { ref, onMounted, onBeforeUnmount } from "vue";
-import { type Order } from "@/types";
+import { ref, computed, onMounted, onBeforeUnmount } from "vue";
+import { type Order, OrderSide } from "@/types";
 
 export const useWebSocket = () => {
   const orders = ref<Order[]>([]);
-  const markPrice = ref<number | null>(null);
+  // const markPrice = ref<number | null>(null);
   const socket = ref<WebSocket | null>(null);
+
+  const buyOrders = computed(() => {
+    const _buyOrders = orders.value.filter(
+      (order) => order.side === OrderSide.Buy
+    );
+
+    let cumulativeAmount = 0;
+
+    return _buyOrders.map((order) => {
+      cumulativeAmount += order.amount;
+      return {
+        ...order,
+        total: cumulativeAmount,
+      };
+    });
+  });
+
+  const sellOrders = computed(() => {
+    const _sellOrders = orders.value.filter(
+      (order) => order.side === OrderSide.Sell
+    );
+
+    let cumulativeAmount = 0;
+
+    return _sellOrders.map((order) => {
+      cumulativeAmount += order.amount;
+      return {
+        ...order,
+        total: cumulativeAmount,
+      };
+    });
+  });
+
+  const markPrice = computed(() => {
+    const bestSellPrice =
+      sellOrders.value[sellOrders.value.length - 1]?.price || 0;
+    const bestBidPrice = buyOrders.value[0]?.price || 0;
+    return (bestSellPrice + bestBidPrice) / 2;
+  });
 
   const insertOrder = (order: Order) => {
     const existingOrderIndex = orders.value.findIndex((o) => o.id === order.id);
@@ -14,23 +53,11 @@ export const useWebSocket = () => {
       orders.value.push(order);
     }
 
-    // Sort orders by price in decreasing order
     orders.value.sort((a, b) => b.price - a.price);
-
-    // Update mark price based on the best buy and sell prices
-    const bestBuy = orders.value.find((o) => o.side === "buy")?.price ?? 0;
-    const bestSell = orders.value.find((o) => o.side === "sell")?.price ?? 0;
-    markPrice.value = (bestBuy + bestSell) / 2;
   };
 
   const deleteOrder = (orderId: string) => {
-    // Filter out the order with the given ID
     orders.value = orders.value.filter((order) => order.id !== orderId);
-
-    // Recalculate mark price after deletion
-    const bestBuy = orders.value.find((o) => o.side === "buy")?.price ?? 0;
-    const bestSell = orders.value.find((o) => o.side === "sell")?.price ?? 0;
-    markPrice.value = (bestBuy + bestSell) / 2;
   };
 
   const initializeWebSocket = () => {
@@ -41,10 +68,10 @@ export const useWebSocket = () => {
     };
 
     socket.value.onmessage = (event) => {
-      console.log("WebSocket message received:", event.data);
       try {
         const data = JSON.parse(event.data);
 
+        // Initial batch
         if (data.existing) {
           data.existing.forEach((order: Order) => insertOrder(order));
         }
@@ -82,5 +109,5 @@ export const useWebSocket = () => {
     }
   });
 
-  return { orders, markPrice };
+  return { orders, markPrice, buyOrders, sellOrders };
 };
