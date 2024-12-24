@@ -6,12 +6,6 @@ import { useWebSocket } from './composables/useWebSocket'
 const messages = ref<string[]>([])
 const { markPrice, buyOrders, sellOrders } = useWebSocket()
 
-let socket: WebSocket;
-
-onMounted(() => {
-})
-
-
 </script>
 
 <template>
