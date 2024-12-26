@@ -127,7 +127,7 @@ app.post("/orders", (req, res) => {
   }
 
   const mark = getMark();
-
+  console.log('>>> difference:', mark - order.price)
   // Note: we're not doing any matching here, we just mock it in a way that if
   // the order price crosses the mark (not even the best offer on the other side),
   // we assume the order executed immediately.

@@ -1,7 +1,7 @@
 import { ref, computed, onMounted, onBeforeUnmount } from "vue";
 import { type Order, OrderSide, type GroupOrder } from "@/types";
 
-export const useWebSocket = () => {
+export const useFetchOrders = () => {
   const orders = ref<Order[]>([]);
   const groupSize = ref<number>(10);
   const socket = ref<WebSocket | null>(null);
@@ -46,7 +46,7 @@ export const useWebSocket = () => {
     } else {
       orders.value.push(order);
     } 
-
+    
     orders.value.sort((a, b) => b.price - a.price);
   };
 
@@ -55,7 +55,7 @@ export const useWebSocket = () => {
   };
 
   
-  // Function to group orders based on price and groupSize
+  // Grouping orders by side and groupSize
   const groupOrders = (orders: Order[], side: OrderSide): Order[] => {
     const groupedData: GroupOrder = {};
     
@@ -94,7 +94,7 @@ export const useWebSocket = () => {
   };
 
   const initializeWebSocket = () => {
-    socket.value = new WebSocket("ws://localhost:8080");
+    socket.value = new WebSocket('ws://localhost:8080');
 
     socket.value.onopen = () => {
       console.log("WebSocket connection established");

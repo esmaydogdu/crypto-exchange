@@ -3,6 +3,11 @@ export enum OrderSide {
   Sell = "sell",
 }
 
+export enum OrderResult {
+  Inserted = "inserted",
+  Executed = "executed",
+}
+
 export type Order = {
   id: string;
   side: OrderSide;
@@ -10,6 +15,12 @@ export type Order = {
   amount: number;
   total?: number;
 };
+
+export type OrderFormData = {
+  side: OrderSide | null;
+  price: number | null;
+  amount: number | null;
+}
 
 export type GroupOrder = {
   [key: number]: Order

@@ -1,0 +1,38 @@
+
+import { ref, reactive, computed } from "vue";
+import { OrderSide, OrderResult, type OrderFormData } from "@/types";
+
+export const useOrderForm = () => {
+
+  
+  const orderStatus = ref<string | null>(null);
+
+  const placeOrder = async (data: OrderFormData) => {
+
+    try {
+      const response = await fetch("http://localhost:8080/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.result === OrderResult.Inserted) {
+          orderStatus.value = `Order has been inserted with id: ${data.order.id}!`;
+        } else if (data.result === OrderResult.Executed) {
+          orderStatus.value = "Order has been executed!";
+        }
+      } else {
+        throw new Error("Failed to place order");
+      }
+    } catch (error) {
+      orderStatus.value = error instanceof Error ? error.message : "Unknown error";
+    }
+  };
+
+  return {
+    orderStatus,
+    placeOrder
+  };
+};

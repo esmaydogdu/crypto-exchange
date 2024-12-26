@@ -21,6 +21,8 @@
     "@types/jsdom": "^21.1.7",
     "@types/node": "^22.10.2",
     "@vitejs/plugin-vue": "^5.2.1",
+    "@vue/compiler-dom": "^3.5.13",
+    "@vue/server-renderer": "^3.5.13",
     "@vue/test-utils": "^2.4.6",
     "@vue/tsconfig": "^0.7.0",
     "cypress": "^13.17.0",
