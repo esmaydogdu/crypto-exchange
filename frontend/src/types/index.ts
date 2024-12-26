@@ -8,4 +8,9 @@ export type Order = {
   side: OrderSide;
   price: number;
   amount: number;
+  total?: number;
 };
+
+export type GroupOrder = {
+  [key: number]: Order
+}

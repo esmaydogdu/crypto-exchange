@@ -3,34 +3,41 @@ import { ref, onMounted, onBeforeMount } from 'vue'
 import HelloWorld from './components/HelloWorld.vue'
 import { useWebSocket } from './composables/useWebSocket'
 
-const messages = ref<string[]>([])
-const { markPrice, buyOrders, sellOrders } = useWebSocket()
+const groupSizes = ref<number[]>([0, 1, 10, 100])
+const { markPrice, buyOrders, sellOrders, groupSize } = useWebSocket()
 
+const formatPrice = (price: number) => {
+  return groupSize.value ? price : price.toFixed(2)
+}
+const formatDecimals = (number: number, decimalCount: number) => {
+  return number.toFixed(decimalCount)
+}
 </script>
 
 <template>
   <div>
     <HelloWorld msg="I did it!" />
+    <label for="group-size">Choose a flavor:</label>
+    <input list="group-sizes" id="group-size" name="group-size" />
+    
+    <select id="group-sizes" v-model="groupSize">
+        <option v-for="size in groupSizes" :value="size">{{size}}</option>
+    </select>
     <div>
       <div class="orders pink">
         <p v-for="(order, id) in sellOrders" :key="id">
-          {{ order.side }} // {{ order.price }} // {{ order.amount }} // {{ order.total }}
+          {{ order.side }} // {{ formatPrice(order.price) }} // {{ formatDecimals(order.amount, 2) }} // {{ formatDecimals(order.total, 2) }}
         </p>
       </div>
       <div> {{ markPrice }}</div>
       <div class="orders blue">
         <p v-for="(order, id) in buyOrders" :key="id">
-          {{ order.side }} // {{ order.price }} // {{ order.amount }} // {{ order.total }}
+          {{ order.side }} // {{ formatPrice(order.price) }} // {{ formatDecimals(order.amount, 2) }} // {{ formatDecimals(order.total, 2) }}
         </p>
       </div>
     </div>
-    <div class="test">
-      <div class="test2">{{ markPrice }}</div>
-    </div>
   </div>
 </template>
-13.93746453208724 
-28.39789432312574
 <style lang="scss" scoped>
 .pink {
   background-color: pink;

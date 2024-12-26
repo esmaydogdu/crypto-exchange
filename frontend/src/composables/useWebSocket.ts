@@ -1,18 +1,16 @@
 import { ref, computed, onMounted, onBeforeUnmount } from "vue";
-import { type Order, OrderSide } from "@/types";
+import { type Order, OrderSide, type GroupOrder } from "@/types";
 
 export const useWebSocket = () => {
   const orders = ref<Order[]>([]);
-  // const markPrice = ref<number | null>(null);
+  const groupSize = ref<number>(10);
   const socket = ref<WebSocket | null>(null);
 
+
   const buyOrders = computed(() => {
-    const _buyOrders = orders.value.filter(
-      (order) => order.side === OrderSide.Buy
-    );
+    const _buyOrders = groupOrders(orders.value, OrderSide.Buy)
 
     let cumulativeAmount = 0;
-
     return _buyOrders.map((order) => {
       cumulativeAmount += order.amount;
       return {
@@ -23,13 +21,10 @@ export const useWebSocket = () => {
   });
 
   const sellOrders = computed(() => {
-    const _sellOrders = orders.value.filter(
-      (order) => order.side === OrderSide.Sell
-    );
+    const _sellOrders = groupOrders(orders.value, OrderSide.Sell)
 
     let cumulativeAmount = 0;
-
-    return _sellOrders.map((order) => {
+    return _sellOrders.map((order: Order) => {
       cumulativeAmount += order.amount;
       return {
         ...order,
@@ -39,8 +34,7 @@ export const useWebSocket = () => {
   });
 
   const markPrice = computed(() => {
-    const bestSellPrice =
-      sellOrders.value[sellOrders.value.length - 1]?.price || 0;
+    const bestSellPrice = sellOrders.value[sellOrders.value.length - 1]?.price || 0;
     const bestBidPrice = buyOrders.value[0]?.price || 0;
     return (bestSellPrice + bestBidPrice) / 2;
   });
@@ -51,13 +45,52 @@ export const useWebSocket = () => {
       orders.value[existingOrderIndex] = order;
     } else {
       orders.value.push(order);
-    }
+    } 
 
     orders.value.sort((a, b) => b.price - a.price);
   };
 
   const deleteOrder = (orderId: string) => {
     orders.value = orders.value.filter((order) => order.id !== orderId);
+  };
+
+  
+  // Function to group orders based on price and groupSize
+  const groupOrders = (orders: Order[], side: OrderSide): Order[] => {
+    const groupedData: GroupOrder = {};
+    
+    const _orders = orders
+    .filter((order) => order.side === side)
+    .sort((a, b) => b.price - a.price);
+    
+    if (!groupSize.value) {
+      return _orders
+    }
+    
+    let cumulativeAmount = 0;
+    _orders.forEach((order) => {
+      // lower bound
+      const bucket = Math.floor(order.price / groupSize.value) * groupSize.value;
+
+      if (!groupedData[bucket]) {
+        groupedData[bucket] = { amount: 0, id: order.id, side: order.side, price: bucket }; 
+      }
+
+      // total amount for all orders in the bucket
+      groupedData[bucket].amount += order.amount;
+      
+
+      // aggregated amount for all orders
+      cumulativeAmount += order.amount;
+      groupedData[bucket].total = cumulativeAmount;
+    });
+
+    // Convert grouped data back to an array, sorted in descending order by price
+    return Object.keys(groupedData)
+      .map((key) => ({
+        ...groupedData[Number(key)]
+      }))
+      .sort((a, b) => b.price - a.price);
   };
 
   const initializeWebSocket = () => {
@@ -109,5 +142,5 @@ export const useWebSocket = () => {
     }
   });
 
-  return { orders, markPrice, buyOrders, sellOrders };
+  return { orders, markPrice, buyOrders, sellOrders, groupSize };
 };
