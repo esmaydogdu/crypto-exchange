@@ -2,7 +2,7 @@
 import { computed, type PropType } from 'vue'
 import { type OrderFormData } from '@/types'
 import { useOrderForm } from "@/composables";
-import { Input, Button } from "@/components";
+import { Input, Button, Dropdown } from "@/components";
 
 const { orderStatus, placeOrder } = useOrderForm();
 
@@ -28,6 +28,7 @@ const clearStatus = () => {
 
 
 const handleSubmit = async () => {
+  console.log('sana noluyo haci')
   if (!isFormValid.value) {
     orderStatus.value = "Invalid formData values!";
     return;
@@ -44,7 +45,13 @@ const handleSubmit = async () => {
 <template>
   <div class="entry-form">
     <form @submit.prevent="handleSubmit">
-      <p>{{ orderStatus }}</p>
+      <div class="row">
+        <Dropdown
+          placeholder="Order side"
+          v-model="modelValue.side"
+          :options="[{ label: 'Buy', value: 'buy'}, { label: 'Sell', value: 'sell'}]"
+        />
+      </div>
       <div class="row">
         <Input 
           v-model="modelValue.price"
@@ -59,12 +66,8 @@ const handleSubmit = async () => {
           class="row-element"
         />
       </div>
-      <div>
-        <label for="side">Order Type:</label>
-        <select v-model="modelValue.side" required>
-          <option value="buy">Buy</option>
-          <option value="sell">Sell</option>
-        </select>
+      <div class="row order-status">
+        {{ orderStatus }}
       </div>
       <div class="row">
         <Button 
@@ -86,12 +89,15 @@ const handleSubmit = async () => {
 .row {
   display: flex;
   flex-direction: row;
+  margin-bottom: 12px;
   
   .row-element { 
     &:not(:last-child) {
       margin-right: 12px;
     }
   }
-
+}
+.order-status {
+  height: 20px;
 }
 </style>

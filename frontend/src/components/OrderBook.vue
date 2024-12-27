@@ -1,10 +1,20 @@
 <script setup lang="ts">
-import { ref } from 'vue' 
+import { ref, computed} from 'vue' 
+import{ Dropdown } from '@/components'
 import { useFetchOrders } from '@/composables'
 
 const { markPrice, sellOrders, buyOrders, groupSize } = useFetchOrders();
 
 const groupSizes = ref<number[]>([0, 1, 10, 100])
+
+const groupSizeOptions = computed(() => {
+  return groupSizes.value.map(size => {
+    return {
+      value: size,
+      label: size.toString()
+    }
+  })
+})
 
 const formatPrice = (price: number) => {
   return groupSize.value ? price : price.toFixed(2)
@@ -16,9 +26,10 @@ const formatDecimals = (number: number, decimalCount: number) => {
 </script>
 <template>
   <div>
-    <select id="group-sizes" v-model="groupSize">
-        <option v-for="size in groupSizes" :value="size">{{size}}</option>
-    </select>
+    <Dropdown
+      :options="groupSizeOptions"
+      v-model="groupSize"
+    />
     <div>
       <div class="orders pink">
         <p v-for="(order, id) in sellOrders" :key="id" @click="$emit('row-click', order)">
@@ -47,8 +58,7 @@ const formatDecimals = (number: number, decimalCount: number) => {
 .orders {
   display: flex;
   flex-direction: column;
-  max-height: 500px;
-  width: 1000px;
+  max-height: 300px;
   overflow-y: scroll;
 
   p {

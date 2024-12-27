@@ -4,7 +4,6 @@
       <input 
         v-model="internalValue" 
         :placeholder="placeholder" 
-        required 
         class="input"
       />
     </div>

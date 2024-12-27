@@ -17,9 +17,31 @@ const handleRowClick = (data: Order) => {
 </script>
 
 <template>
-  <div>    
-    <OrderForm v-model="formData" />
-    <OrderBook @row-click="handleRowClick" />
+  <div class="main-container">    
+    <OrderForm v-model="formData" class="order-form"/>
+    <OrderBook @row-click="handleRowClick" class="order-book"/>
   </div>
 </template>
+<style scoped lang="scss">
+.main-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 32px auto;
 
+  .order-form {
+    flex: 1;
+    min-width: 400px;
+    margin-bottom: 32px;
+  }
+  .order-book {
+    flex: 1;
+    min-width: 450px;
+  }
+}
+.main-container > *:nth-child(1) {
+    flex-direction: column-reverse;  // Form comes on top after wrapping
+  }
+</style>

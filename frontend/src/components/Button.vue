@@ -2,7 +2,6 @@
   <button
     v-bind="$attrs"
     :disabled="isDisabled"
-    @click="$emit('click')"
     class="button"
     :class="{'button--disabled': isDisabled}"
   >
@@ -21,6 +20,7 @@ const props = defineProps({
     default: false
   },
 });
+
 </script>
 <style lang="scss" scoped>
 @import "@/assets/_variables.scss";
