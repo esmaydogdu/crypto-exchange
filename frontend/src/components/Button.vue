@@ -1,14 +1,25 @@
 <template>
-    <button class="button" @click="$emit('click')">{{ label }}</button>
+  <button
+    v-bind="$attrs"
+    :disabled="isDisabled"
+    @click="$emit('click')"
+    class="button"
+    :class="{'button--disabled': isDisabled}"
+  >
+    {{ label }}
+  </button>
 </template>
-
 <script setup lang="ts">
 
 const props = defineProps({
   label: {
     type: String,
     required: true
-  }
+  },
+  isDisabled: {
+    type: Boolean,
+    default: false
+  },
 });
 </script>
 <style lang="scss" scoped>
@@ -19,9 +30,18 @@ const props = defineProps({
   background-color: $color-electric;
   border-radius: 2px;
   transition: 0.2s all ease;
-
-  &:hover, &:focus, &:active {
+  border: none;
+  cursor: pointer;
+  
+  &:not(&--disabled):hover,
+  &:not(&--disabled):focus,
+  &:not(&--disabled):active{
     background-color: $color-electric-hover;
+  }
+
+  &--disabled {
+    background-color: $color-placeholder;
+    cursor: no-drop;
   }
   
 }

@@ -3,11 +3,6 @@ import { reactive } from 'vue'
 import { OrderBook, OrderForm } from '@/components'
 import { type Order, OrderSide } from '@/types'
 
-// const formatDecimals = (number: number, decimalCount: number) => {
-//   if (number.toString().split('.')[1].length >= decimalCount)
-//   return number.toFixed(decimalCount)
-// }
-
 const formData = reactive({
   price: null as number | null,
   amount: null as number | null,

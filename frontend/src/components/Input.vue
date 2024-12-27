@@ -1,29 +1,64 @@
 <template>
-    <input class="input" :placeholder="placeholder"/>
+    <div class="input-container">
+      <div v-if="label" class="label">{{ label }}</div>
+      <input 
+        v-model="internalValue" 
+        :placeholder="placeholder" 
+        required 
+        class="input"
+      />
+    </div>
 </template>
 
 <script setup lang="ts">
+import { ref, watch } from 'vue'
 
 const props = defineProps({
-  label: {
+  placeholder: {
     type: String,
+    default: ''
+  },
+  modelValue: {
+    type: [String, Number],
     required: true
   },
-  placeholder: {
+  label: {
     type: String,
     default: ''
   }
 });
+const internalValue = ref(props.modelValue)
+
+const emit = defineEmits(['update:modelValue']);
+
+watch(() => props.modelValue, (newValue) => {
+  internalValue.value = newValue
+})
+
+watch(internalValue, (newValue) => {
+  emit('update:modelValue', newValue)
+})
+
 </script>
 <style lang="scss" scoped>
 @import "@/assets/_variables.scss";
-.input {
-  padding: 12px 16px;
-  background-color: $bg-color-muted;
-  border: 2px solid $color-grey;
 
-  &:focus {
-    border-color: $color-electric;
+.input-container {
+  .label {
+    color: $color-placeholder;
+    padding-bottom: 4px;
+  }
+  .input {
+    padding: $box-padding;
+    background-color: $color-black-mute;
+    border: 1px solid $color-dark-border;
+    border-radius: $border-radius;
+    color: $color-white;
+  
+    &:focus, &:active {
+      outline: none;
+      border-color: $color-electric;
+    }
   }
 }
 
