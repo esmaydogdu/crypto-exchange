@@ -28,7 +28,6 @@ const clearStatus = () => {
 
 
 const handleSubmit = async () => {
-  console.log('sana noluyo haci')
   if (!isFormValid.value) {
     orderStatus.value = "Invalid formData values!";
     return;

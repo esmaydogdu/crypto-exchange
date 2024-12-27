@@ -30,6 +30,7 @@ const handleRowClick = (data: Order) => {
   justify-content: space-between;
   max-width: 1200px;
   margin: 32px auto;
+  padding: 0 32px;
 
   .order-form {
     flex: 1;

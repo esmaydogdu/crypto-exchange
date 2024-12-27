@@ -19,7 +19,7 @@ export const useOrderForm = () => {
       if (response.ok) {
         const data = await response.json();
         if (data.result === OrderResult.Inserted) {
-          orderStatus.value = `Order has been inserted with id: ${data.order.id}!`;
+          orderStatus.value = `Order has been inserted! id: ${data.order.id}`;
         } else if (data.result === OrderResult.Executed) {
           orderStatus.value = "Order has been executed!";
         }
