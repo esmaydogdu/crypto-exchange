@@ -1,16 +1,17 @@
 
-import { ref, reactive, computed } from "vue";
-import { OrderSide, OrderResult, type OrderFormData } from "@/types";
+import { ref } from "vue";
+import { OrderResult, type OrderFormData } from "@/types";
 
 export const useOrderForm = () => {
 
+  const API_URL = import.meta.env.VITE_APP_API_URL;
   
   const orderStatus = ref<string | null>(null);
 
   const placeOrder = async (data: OrderFormData) => {
 
     try {
-      const response = await fetch("http://localhost:8080/orders", {
+      const response = await fetch(`http://${API_URL}/orders`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),

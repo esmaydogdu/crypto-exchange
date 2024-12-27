@@ -1,10 +1,13 @@
 import { ref, computed, onMounted, onBeforeUnmount } from "vue";
 import { type Order, OrderSide, type GroupOrder } from "@/types";
 
+
 export const useFetchOrders = () => {
   const orders = ref<Order[]>([]);
   const groupSize = ref<number>(10);
   const socket = ref<WebSocket | null>(null);
+
+  const API_URL = import.meta.env.VITE_APP_API_URL;
 
 
   const buyOrders = computed(() => {
@@ -94,7 +97,7 @@ export const useFetchOrders = () => {
   };
 
   const initializeWebSocket = () => {
-    socket.value = new WebSocket('ws://localhost:8080');
+    socket.value = new WebSocket(`ws://${API_URL}`);
 
     socket.value.onopen = () => {
       console.log("WebSocket connection established");
