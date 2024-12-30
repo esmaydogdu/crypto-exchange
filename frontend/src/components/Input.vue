@@ -49,6 +49,7 @@ watch(internalValue, (newValue) => {
   }
   .input {
     padding: $box-padding;
+    width: 100%;
     background-color: $color-black-mute;
     border: 1px solid $color-dark-border;
     border-radius: $border-radius;

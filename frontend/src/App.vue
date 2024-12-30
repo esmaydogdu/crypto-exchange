@@ -14,11 +14,16 @@ const handleRowClick = (data: Order) => {
   formData.amount = data.amount
   formData.side = data.side
 }
+const resetForm = () => {
+  formData.price = null
+  formData.amount = null
+  formData.side = null
+}
 </script>
 
 <template>
   <div class="main-container">    
-    <OrderForm v-model="formData" class="order-form"/>
+    <OrderForm v-model="formData" class="order-form" @update:modelValue="console.log('Updated:', formData)" @reset="resetForm"/>
     <OrderBook @row-click="handleRowClick" class="order-book"/>
   </div>
 </template>
@@ -31,6 +36,7 @@ const handleRowClick = (data: Order) => {
   max-width: 1200px;
   margin: 32px auto;
   padding: 0 32px;
+  gap: 32px;
 
   .order-form {
     flex: 1;

@@ -3,6 +3,7 @@
     v-bind="$attrs"
     :disabled="isDisabled"
     class="button"
+    type="button"
     :class="{'button--disabled': isDisabled}"
   >
     {{ label }}
@@ -25,7 +26,7 @@ const props = defineProps({
 <style lang="scss" scoped>
 @import "@/assets/_variables.scss";
 .button {
-  padding: 6px 12px;
+  padding: 12px;
   color: $color-white;
   background-color: $color-electric;
   border-radius: 2px;

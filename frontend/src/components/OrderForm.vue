@@ -5,7 +5,7 @@ import { useOrderForm } from "@/composables";
 import { Input, Button, Dropdown } from "@/components";
 
 const { orderStatus, placeOrder } = useOrderForm();
-
+const emit = defineEmits(['reset']);
 const props = defineProps({
   modelValue: {
     type: Object as PropType<OrderFormData>,
@@ -17,9 +17,10 @@ const isFormValid = computed(() => {
 });
 
 const resetForm = () => {
-  props.modelValue.price = null;
-  props.modelValue.amount = null;
-  props.modelValue.side = null;
+  // props.modelValue.price = null;
+  // props.modelValue.amount = null;
+  // props.modelValue.side = null;
+  emit('reset');
 };
 
 const clearStatus = () => {
@@ -34,8 +35,8 @@ const handleSubmit = async () => {
   }
   orderStatus.value = "Placing order...";
   await placeOrder(props.modelValue);
-  resetForm()
   setTimeout(() => {
+    resetForm()
     clearStatus();
   }, 2000)
 };
@@ -91,12 +92,14 @@ const handleSubmit = async () => {
   margin-bottom: 12px;
   
   .row-element { 
+    flex: 1;
     &:not(:last-child) {
       margin-right: 12px;
     }
+
+    &button {
+      flex: 1;
+    }
   }
-}
-.order-status {
-  height: 20px;
 }
 </style>

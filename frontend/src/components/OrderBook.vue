@@ -27,7 +27,7 @@ const formatDecimals = (number: number, decimalCount: number) => {
 <template>
   <div>
     <div class="row">
-      <strong>Dummy Coin OrderBook</strong>
+      <strong>DummyCoin Order Book</strong>
       <Dropdown
         :options="groupSizeOptions"
         v-model="groupSize"
