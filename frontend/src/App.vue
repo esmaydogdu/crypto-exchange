@@ -14,16 +14,12 @@ const handleRowClick = (data: Order) => {
   formData.amount = data.amount
   formData.side = data.side
 }
-const resetForm = () => {
-  formData.price = null
-  formData.amount = null
-  formData.side = null
-}
+
 </script>
 
 <template>
   <div class="main-container">    
-    <OrderForm v-model="formData" class="order-form" @update:modelValue="console.log('Updated:', formData)" @reset="resetForm"/>
+    <OrderForm v-model="formData" class="order-form" />
     <OrderBook @row-click="handleRowClick" class="order-book"/>
   </div>
 </template>
@@ -48,7 +44,9 @@ const resetForm = () => {
     min-width: 450px;
   }
 }
+
+// Reverse order while columns
 .main-container > *:nth-child(1) {
-    flex-direction: column-reverse;  // Form comes on top after wrapping
+    flex-direction: column-reverse;
   }
 </style>
